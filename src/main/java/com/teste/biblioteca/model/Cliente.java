@@ -27,7 +27,7 @@ public class Cliente {
 	@Column(nullable = false)
 	private String senha;
 	
-	@OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "cliente", orphanRemoval = true, fetch = FetchType.EAGER)
 	private List<Livro> livros = new ArrayList<Livro>();
 	
 	public Cliente() {
@@ -70,6 +70,7 @@ public class Cliente {
 	public void setLivros(List<Livro> livros) {
 		this.livros = livros;
 	}
+	
 	
 	public String toString() {
 		return "Nome: " + nome + " ID: " + id;

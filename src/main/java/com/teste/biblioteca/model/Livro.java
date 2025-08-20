@@ -78,6 +78,6 @@ public class Livro {
 	}
 	
 	public String toString() {
-		return "Livro: " + nome + ", Autor: " + autor;
+		return "ID: " + id + ", Livro: " + nome + ", Autor: " + autor;
 	}
 }

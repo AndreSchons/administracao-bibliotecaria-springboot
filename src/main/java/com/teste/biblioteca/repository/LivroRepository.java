@@ -5,4 +5,5 @@ import com.teste.biblioteca.model.Livro;
 
 public interface LivroRepository extends JpaRepository<Livro, Long> {
 
+	
 }
