@@ -1,7 +1,6 @@
 package com.teste.biblioteca.cli;
 
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Component;
 
 import com.teste.biblioteca.model.Cliente;
@@ -9,7 +8,6 @@ import com.teste.biblioteca.model.Livro;
 import com.teste.biblioteca.repository.ClienteRepository;
 import com.teste.biblioteca.repository.LivroRepository;
 
-import java.util.Optional;
 import java.util.Scanner;
 
 @Component
@@ -130,46 +128,57 @@ public class MenuCLI implements CommandLineRunner {
 						String senha = sc.nextLine();
 
 						Cliente cliente = clienteRepo.findByNomeAndSenha(nome, senha);
-						
+
 						if (cliente != null) {
-							System.out.println("Bem vindo " + nome);
-							
-							System.out.println("1 - Emprestar Livro");
-							System.out.println("2 - Devolver Livro");
-							System.out.println("3 - Ver Meus Livros");
-							int optionUserLog = sc.nextInt();
-							sc.nextLine();
-							
-							switch(optionUserLog) {
-							case 1: 
-								System.out.println("Livros disponiveis: ");
-								livroRepo.findAll().forEach(l -> System.out.println(l));
-								System.out.println("Selecione o ID do livro: ");
-								Long idLivro = sc.nextLong();
-								
-								Livro l = livroRepo.findById(idLivro).orElse(null);
-								if(l != null) {
-									l.setCliente(cliente);
-									livroRepo.save(l);
-									System.out.println("Livro emprestado com sucesso!");
-								} else {
-									System.out.println("ID invalido tente novamente!");
+							int optionUserLog;
+							do {
+								System.out.println("Bem vindo " + nome);
+								System.out.println("1 - Emprestar Livro");
+								System.out.println("2 - Devolver Livro");
+								System.out.println("3 - Ver Meus Livros");
+								System.out.println("4 - Sair");
+								optionUserLog = sc.nextInt();
+								sc.nextLine();
+
+								switch (optionUserLog) {
+								case 1:
+									System.out.println("Livros disponiveis: ");
+									livroRepo.findAll().forEach(l -> System.out.println(l));
+									System.out.println("Selecione o ID do livro: ");
+									Long idLivro = sc.nextLong();
+
+									Livro l = livroRepo.findById(idLivro).orElse(null);
+									if (l != null) {
+										l.setCliente(cliente);
+										livroRepo.save(l);
+										System.out.println("Livro emprestado com sucesso!");
+									} else {
+										System.out.println("ID invalido tente novamente!");
+									}
+									break;
+								case 2:
+									System.out.println("Livros para devolver: ");
+									cliente.getLivros().forEach(livros -> System.out.println(livros));
+									System.out.println("Digite o ID do livro a ser devolvido: ");
+									idLivro = sc.nextLong();
+									Livro livro = livroRepo.findById(idLivro).orElse(null);
+
+									if (livro != null && livro.getCliente() != null) {
+										livro.setCliente(null);
+										livroRepo.save(livro);
+										System.out.println("Livro entregue.");
+									}
+									break;
+								case 3:
+									System.out.println("Livros emprestados: ");
+									cliente.getLivros().forEach(liv -> System.out.println(liv));
+									break;
+								case 4:
+									System.out.println("Saindo...");
+									break;
 								}
-								break;
-							case 2: 
-								System.out.println("Livros para devolver: ");
-								cliente.getLivros().forEach(livros -> System.out.println(livros));
-								System.out.println("Digite o ID do livro a ser devolvido: ");
-								idLivro = sc.nextLong();
-								Livro livro = livroRepo.findById(idLivro).orElse(null);
-								
-								if (livro != null && livro.getCliente() != null && livro.getCliente().equals(cliente)) {
-									livro.setCliente(cliente);
-									livroRepo.save(livro);
-									System.out.println("Livro entregue.");
-								}
-							}
-							
+							} while (optionUserLog != 4);
+
 						} else {
 							System.out.println("Usuario ou senha incorreta!");
 						}
